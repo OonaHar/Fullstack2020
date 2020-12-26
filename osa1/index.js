@@ -1,59 +1,88 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+
+
+const Button = ({ children, onClick, className }) => (
+  <button className={className} onClick={onClick}>
+    {children}
+  </button>
+);
+
+const StatisticLine = ({ text, value }) => (
+  <div>
+    <p>{text} {value} </p>
+   
+  </div>
+);
+
+const Statistics = ({ good, neutral, bad, all, average, positive }) => {
+  if (all === 0) {
+    return <p>No feedback given.</p>;
+  } else {
+    return (
+      <table>
+        <div>
+          <StatisticLine text="Good:" value={good} />
+          <StatisticLine text="Neutral:" value={neutral} />
+          <StatisticLine text="Bad:" value={bad} />
+          <StatisticLine text="All:" value={all} />
+          <StatisticLine  text="Average:" value={average} />
+          <StatisticLine text="Positive:" value={positive} />
+        </div>
+      </table>
+    );
+  }
+};
 
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
-  }
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const all = good+neutral+bad;
+  const average = all
+    ? ((good * 1 + neutral * 0 + bad * -1) / all).toFixed(1)
+    : 0;
+  const positive = all ? `${((good / all) * 100).toFixed(1)}%` : "0%";
 
   return (
-    <div class = "header">
-    <header>
-      <h1>{course.name}</h1>
+    <main class>
+      <header>
+      <h1>Give feedback</h1>
       </header>
-    
+      <div class>
+        <Button
+          className="button"
+          onClick={() => setGood(good + 1)}
+        >Good
+        </Button>
 
-  <content>
-    <p>
-      CONTENT
-    </p>
-    <parts>
-      <p>
-        {course.parts[0].name} {course.parts[0].exercises}
-      </p>   
-     
-      <p>
-        {course.parts[1].name} {course.parts[1].exercises}
-      </p> 
-      
-      <p>
-        {course.parts[2].name} {course.parts[2].exercises}
-      </p>
-      </parts>
-      </content>
-     
-      <total>
-      <p>
-      TOTAL
-    </p>
-      <p>Number of exercises {course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises}</p>
-      </total>
-    </div>
-  )
-  }
+        <Button
+          className="button"
+          onClick={() => setNeutral(neutral + 1)}
+        >
+          Neutral
+        </Button>
 
-ReactDOM.render(<App />, document.getElementById('root'))
+        <Button
+          className="button"
+          onClick={() => setBad(bad + 1)}
+        >
+          Bad
+        </Button>
+      </div>
+      <header>
+       <h1>Statistics</h1> 
+        </header>
+      <Statistics
+        good={good}
+        neutral={neutral}
+        bad={bad}
+        all={all}
+        average={average}
+        positive={positive}
+      />
+    </main>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
